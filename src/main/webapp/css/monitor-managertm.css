@@ -1,0 +1,37 @@
+/* Reglas aisladas: no modifican body ni otras secciones */
+#serverMonitorFull{background:#111722;color:#e8edf5;border:1px solid #222b3a;border-radius:12px;overflow:hidden;max-width:1100px;margin:0 auto}
+#serverMonitorFull .monitor-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:24px 28px;border-bottom:1px solid #222b3a}
+#serverMonitorFull .header-title{font-size:20px;font-weight:700}
+#serverMonitorFull .header-subtitle{font-size:13px;color:#8993a4;margin-top:6px}
+#serverMonitorFull .global-status{display:flex;align-items:center;gap:9px;border-radius:30px;padding:8px 13px;font-size:12px;font-weight:700;white-space:nowrap}
+#serverMonitorFull .status-dot{height:8px;width:8px;border-radius:50%;background:#8993a4}
+#serverMonitorFull .global-status.healthy{background:#2bc77a20;color:#42d392}
+#serverMonitorFull .global-status.warning{background:#ff525220;color:#ff6b6b}
+#serverMonitorFull .global-status.healthy .status-dot{background:#42d392}
+#serverMonitorFull .global-status.warning .status-dot{background:#ff6b6b}
+#serverMonitorFull .summary{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid #222b3a}
+#serverMonitorFull .summary-card{padding:24px 28px;display:flex;flex-direction:column;gap:7px;border-right:1px solid #222b3a}
+#serverMonitorFull .summary-card:last-child{border-right:0}
+#serverMonitorFull .summary-number{font-size:30px}
+#serverMonitorFull .summary-label{font-size:11px;color:#768196;letter-spacing:1px}
+#serverMonitorFull .online-text{color:#42d392}
+#serverMonitorFull .offline-text{color:#ff6b6b}
+#serverMonitorFull .services-section{padding:24px 28px}
+#serverMonitorFull .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-weight:600;font-size:14px}
+#serverMonitorFull .services-container{display:flex;flex-direction:column;gap:10px}
+#serverMonitorFull .service-card{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#151c28;border:1px solid #222b3a;border-radius:10px;padding:16px 18px}
+#serverMonitorFull .service-card.service-offline{border-color:#ff6b6b55}
+#serverMonitorFull .service-main{display:flex;align-items:center;gap:12px;min-width:0}
+#serverMonitorFull .service-dot{width:10px;height:10px;flex:none;border-radius:50%;background:#ff6b6b}
+#serverMonitorFull .service-online .service-dot{background:#42d392}
+#serverMonitorFull .service-name{font-size:14px;font-weight:600;margin-bottom:5px}
+#serverMonitorFull .service-endpoint{font-size:11px;color:#788497;overflow-wrap:anywhere}
+#serverMonitorFull .service-result{text-align:right;flex:none}
+#serverMonitorFull .service-status{font-size:11px;font-weight:700;color:#ff6b6b}
+#serverMonitorFull .service-online .service-status{color:#42d392}
+#serverMonitorFull .service-time{font-size:11px;color:#788497;margin-top:5px}
+#serverMonitorFull .refresh-button{border:1px solid #2a3546;background:#1b2432;color:#d1d8e4;border-radius:7px;padding:8px 12px}
+#serverMonitorFull .refresh-button:disabled{opacity:.5;cursor:wait}
+#serverMonitorFull .monitor-footer{display:flex;justify-content:space-between;gap:12px;padding:16px 28px;background:#0f151f;color:#8793a6;font-size:11px}
+#serverMonitorFull .loading-message{padding:24px;text-align:center;color:#8993a4}
+@media(max-width:700px){#serverMonitorFull .monitor-header{flex-direction:column;align-items:flex-start}#serverMonitorFull .summary-card{padding:16px 12px}#serverMonitorFull .services-section{padding:16px}#serverMonitorFull .service-card{align-items:flex-start}#serverMonitorFull .monitor-footer{flex-direction:column}}

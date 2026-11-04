@@ -1,0 +1,345 @@
+:root{
+    --nav:#19253a;
+    --nav-hover:#34465f;
+    --bg:#fafafa;
+    --surface:#fff;
+    --line:#dedfe2;
+    --text:#252b35;
+    --muted:#727883;
+    --green:#0eaa68;
+    --sidebar-width:217px;
+    --radius:6px
+}
+*{
+    box-sizing:border-box
+}
+html,body{
+    margin:0;
+    min-height:100%;
+    width:100%;
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+    background:var(--bg)
+}
+button,input{
+    font:inherit
+}
+button{
+    cursor:pointer
+}
+a{
+    text-decoration:none;
+    color:inherit
+}
+.app-shell{
+    display:flex;
+    min-height:100vh;
+    padding:11px;
+    gap:8px
+}
+.sidebar{
+    width:var(--sidebar-width);
+    flex:none;
+    background:var(--nav);
+    color:#edf1f8;
+    border-radius:6px;
+    padding:10px 8px;
+    display:flex;
+    flex-direction:column;
+    min-height:calc(100vh - 22px);
+    transition:width .2s
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:4px 3px 17px;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap
+}
+.brand svg{
+    width:17px;
+    height:17px;
+    flex:none
+}
+.brand-name{
+    overflow:hidden
+}
+.side-nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px
+}
+.nav-item{
+    height:33px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:0 9px;
+    border:0;
+    border-radius:4px;
+    color:#f1f4fa;
+    background:transparent;
+    text-align:left;
+    font-size:12px;
+    width:100%;
+    white-space:nowrap
+}
+.nav-item:hover,.nav-item.active{
+    background:var(--nav-hover)
+}
+.nav-item svg{
+    width:14px;
+    height:14px;
+    flex:none
+}
+.nav-item span{
+    overflow:hidden
+}
+.sidebar-bottom{
+    margin-top:auto
+}
+.collapse-btn{
+    width:100%;
+    padding:10px;
+    background:transparent;
+    border:0;
+    color:#afbdd0;
+    text-align:left;
+    font-size:11px
+}
+.workspace{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column
+}
+.topbar{
+    height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 9px;
+    font-size:12px;
+    font-weight:600
+}
+.topbar-actions{
+    display:flex;
+    gap:10px;
+    align-items:center
+}
+.icon-button{
+    border:0;
+    background:transparent;
+    color:#222d3a;
+    padding:6px;
+    display:grid;
+    place-items:center
+}
+.icon-button svg{
+    width:16px;
+    height:16px
+}
+.page-content{
+    flex:1;
+    min-width:0
+}
+.view{
+    display:none
+}
+.view.active{
+    display:block
+}
+.metrics{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin:7px 0 9px
+}
+.metric-card{
+    border:1px solid var(--line);
+    border-radius:6px;
+    min-height:60px;
+    padding:9px;
+    background:transparent
+}
+.metric-label{
+    font-size:10px;
+    color:#6d737a;
+    margin-bottom:5px
+}
+.metric-value{
+    font-size:23px;
+    font-weight:400;
+    line-height:1
+}
+.panel{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:12px 13px;
+    background:transparent;
+    min-height:116px
+}
+.panel-title{
+    font-size:12px;
+    font-weight:600;
+    margin:0 0 14px
+}
+.panel-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    color:#777;
+    font-size:12px
+}
+.panel-placeholder{
+    margin-top:16px;
+    padding:8px;
+    color:#526a87;
+    font-size:11px
+}
+.panel-subtitle{
+    color:#767b83;
+    font-size:12px
+}
+.status-icon{
+    color:var(--green)
+}
+.status-icon svg{
+    width:15px;
+    height:15px
+}
+.section-card{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:20px;
+    background:white;
+    margin-top:7px
+}
+.section-card h2{
+    font-size:16px;
+    margin:0 0 10px
+}
+.section-card p{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6
+}
+.chat-launcher{
+    position:fixed;
+    right:11px;
+    bottom:11px;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:var(--nav);
+    color:white;
+    border:0;
+    display:grid;
+    place-items:center;
+    box-shadow:0 4px 10px #0001;
+    z-index:100
+}
+.chat-launcher svg{
+    width:17px;
+    height:17px
+}
+.chat-panel{
+    position:fixed;
+    right:15px;
+    bottom:61px;
+    width:min(380px,calc(100vw - 30px));
+    height:min(530px,calc(100vh - 95px));
+    background:white;
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:0 12px 36px #19253a30;
+    z-index:101;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden
+}
+.chat-panel[hidden]{
+    display:none
+}
+.chat-header{
+    background:var(--nav);
+    color:white;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px
+}
+.chat-header button{
+    border:0;
+    background:transparent;
+    color:white;
+    font-size:19px
+}
+.chat-body{
+    flex:1;
+    overflow:auto;
+    padding:14px;
+    font-size:13px;
+    color:var(--muted)
+}
+.chat-footer{
+    border-top:1px solid var(--line);
+    padding:10px;
+    font-size:11px;
+    color:var(--muted)
+}
+.sidebar.collapsed{
+    width:54px
+}
+.sidebar.collapsed .brand-name,.sidebar.collapsed .nav-item span,.sidebar.collapsed .collapse-label{
+    display:none
+}
+.sidebar.collapsed .nav-item{
+    justify-content:center;
+    padding:0
+}
+.sidebar.collapsed .brand{
+    justify-content:center
+}
+.sidebar.collapsed .collapse-btn{
+    text-align:center
+}
+@media(max-width:650px){
+    .app-shell{
+        padding:7px;
+        gap:7px
+    }
+    .sidebar{
+        width:49px;
+        padding:9px 5px
+    }
+    .brand{
+        justify-content:center
+    }
+    .brand-name,.nav-item span,.collapse-label{
+        display:none
+    }
+    .nav-item{
+        justify-content:center;
+        padding:0
+    }
+    .topbar{
+        height:48px
+    }
+    .metrics{
+        gap:7px
+    }
+    .metric-card{
+        padding:8px
+    }
+    .panel{
+        padding:11px
+    }
+    .collapse-btn{
+        text-align:center
+    }
+}

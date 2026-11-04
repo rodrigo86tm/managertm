@@ -1,0 +1,401 @@
+#webChat {
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    z-index: 99999;
+
+    /*pointer-events: none;*/
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* =========================
+   BOTÓN
+   ========================= */
+
+.chat-button {
+
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    width: 60px;
+    height: 60px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #222;
+
+    color: white;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.25);
+
+    z-index: 99999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    /*pointer-events: auto;*/
+}
+
+
+.chat-button:hover {
+
+    transform: scale(1.08);
+
+    box-shadow:
+        0 6px 20px rgba(0,0,0,0.35);
+}
+
+
+.chat-icon {
+
+    font-size: 26px;
+
+}
+
+
+/* =========================
+   VENTANA
+   ========================= */
+
+.chat-window {
+
+    position: fixed;
+
+    right: 25px;
+    bottom: 95px;
+
+    width: 380px;
+    height: 560px;
+
+    background: white;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.25);
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    z-index: 99998;
+
+    border: 1px solid #ddd;
+    pointer-events: auto;
+}
+
+
+.chat-hidden {
+
+    display: none !important;
+
+}
+
+
+/* =========================
+   HEADER
+   ========================= */
+
+.chat-header {
+
+    height: 65px;
+
+    background: #222;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 15px;
+
+    flex-shrink: 0;
+}
+
+
+.chat-header-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+}
+
+
+.chat-title {
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+}
+
+
+.chat-status {
+
+    font-size: 12px;
+
+    margin-top: 4px;
+
+    opacity: 0.75;
+
+}
+
+
+.chat-status.connected {
+
+    opacity: 1;
+
+}
+
+
+.chat-close {
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    line-height: 1;
+}
+
+
+/* =========================
+   MENSAJES
+   ========================= */
+
+.chat-messages {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 15px;
+
+    background: #f5f5f5;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.chat-loading {
+
+    text-align: center;
+
+    font-size: 12px;
+
+    color: #777;
+
+    padding: 10px;
+}
+
+
+/* =========================
+   BURBUJAS
+   ========================= */
+
+.chat-message {
+
+    max-width: 78%;
+
+    padding: 10px 13px;
+
+    border-radius: 15px;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    word-wrap: break-word;
+
+    white-space: pre-wrap;
+}
+
+
+.chat-message-user {
+
+    align-self: flex-end;
+
+    background: #222;
+
+    color: white;
+
+    border-bottom-right-radius: 4px;
+}
+
+
+.chat-message-assistant {
+
+    align-self: flex-start;
+
+    background: white;
+
+    color: #222;
+
+    border: 1px solid #ddd;
+
+    border-bottom-left-radius: 4px;
+}
+
+
+.chat-message-time {
+
+    display: block;
+
+    font-size: 10px;
+
+    opacity: 0.55;
+
+    margin-top: 4px;
+
+}
+
+
+/* =========================
+   TYPING
+   ========================= */
+
+.chat-typing {
+
+    padding: 5px 15px;
+
+    font-size: 11px;
+
+    color: #777;
+
+    background: #f5f5f5;
+}
+
+
+/* =========================
+   INPUT
+   ========================= */
+
+.chat-input-container {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    padding: 10px;
+
+    border-top: 1px solid #ddd;
+
+    background: white;
+
+    gap: 8px;
+}
+
+
+.chat-input {
+
+    flex: 1;
+
+    resize: none;
+
+    border: 1px solid #ccc;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    max-height: 100px;
+}
+
+
+.chat-input:focus {
+
+    border-color: #888;
+
+}
+
+
+.chat-send {
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #222;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 18px;
+}
+
+
+.chat-send:disabled {
+
+    opacity: 0.4;
+
+    cursor: default;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .chat-window {
+
+        right: 0;
+        bottom: 0;
+
+        width: 100%;
+        height: 100%;
+
+        border-radius: 0;
+    }
+
+
+    .chat-button {
+
+        right: 18px;
+        bottom: 18px;
+    }
+
+}

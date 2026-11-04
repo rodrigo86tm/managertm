@@ -1,0 +1,55 @@
+        .custom-prompt-overlayF,        
+        #custom-prompt-overlay,
+        #custom-prompt-overlayEti,
+        #cpo-Sucs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        /* Estilo del cuadro de diálogo */
+        .custom-promptF,
+        #custom-prompt,
+        #custom-promptEti,
+        #cp-Sucs {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .custom-promptF input,
+        #custom-prompt input,
+        #custom-promptEti input,
+        #cp-Sucs input {
+            width: 90%;
+            padding: 8px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .custom-promptF button,
+        #custom-prompt button,
+        #custom-promptEti button,
+        #cp-Sucs button {
+            padding: 10px 20px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .custom-promptF button:hoover,
+        #custom-prompt button:hoover,
+        #custom-promptEti button:hoover,
+        #cp-Sucs button:hover {
+            background: #0056b3;
+        }
