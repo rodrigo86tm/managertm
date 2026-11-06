@@ -1,0 +1,222 @@
+.ai-control{
+    color:var(--text,#252b35);
+    font-family:Arial,Helvetica,sans-serif
+}
+.ai-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:18px;
+    flex-wrap:wrap
+}
+.ai-header h2{
+    margin:0;
+    font-size:22px
+}
+.ai-header p{
+    margin:5px 0;
+    color:var(--muted,#727883);
+    font-size:13px
+}
+.ai-btn{
+    background:#fff;
+    border:1px solid #dce1e8;
+    border-radius:6px;
+    padding:9px 13px;
+    font-size:12px;
+    color:#29364a;
+    cursor:pointer
+}
+.ai-btn:hover{
+    background:#eef4f8
+}
+.ai-btn.primary{
+    background:#19253a;
+    color:#fff;
+    border-color:#19253a
+}
+.ai-tabs{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+    margin:14px 0
+}
+.ai-tabs button{
+    background:transparent;
+    border:1px solid #dfe4eb;
+    padding:9px 11px;
+    border-radius:6px;
+    color:#566275;
+    cursor:pointer;
+    font-size:12px
+}
+.ai-tabs button.active{
+    background:#19253a;
+    color:#fff;
+    border-color:#19253a
+}
+.ai-card{
+    background:#fff;
+    border:1px solid #e1e4e8;
+    border-radius:7px;
+    padding:16px
+}
+.ai-toolbar{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    margin-bottom:12px
+}
+.ai-toolbar input{
+    padding:10px;
+    border:1px solid #d8dfe6;
+    border-radius:5px;
+    min-width:240px
+}
+.ai-tablewrap{
+    overflow:auto;
+    max-height:65vh
+}
+.ai-table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:12px;
+    white-space:nowrap
+}
+.ai-table th{
+    position:sticky;
+    top:0;
+    background:#f5f7fa;
+    text-align:left;
+    padding:12px;
+    color:#687387
+}
+.ai-table td{
+    padding:12px;
+    border-top:1px solid #e9ecf0;
+    max-width:260px;
+    overflow:hidden;
+    text-overflow:ellipsis
+}
+.ai-table tbody tr:hover{
+    background:#fafbfe
+}
+.ai-actions{
+    display:flex;
+    gap:5px
+}
+.ai-actions button{
+    border:1px solid #dae0e8;
+    background:white;
+    border-radius:4px;
+    padding:6px 8px;
+    font-size:11px;
+    cursor:pointer
+}
+.ai-footer{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    justify-content:flex-end;
+    margin-top:14px
+}
+.ai-notice{
+    padding:10px 12px;
+    border:1px solid #dbe5ec;
+    background:#f2f7fa;
+    border-radius:5px;
+    margin-bottom:12px;
+    font-size:12px
+}
+.ai-notice.error{
+    border-color:#eeb4b4;
+    background:#fff2f2;
+    color:#a22
+}
+.ai-modaloverlay{
+    position:fixed;
+    inset:0;
+    background:#0c1728a6;
+    z-index:1000;
+    display:grid;
+    place-items:center;
+    padding:20px
+}
+.ai-modaloverlay[hidden]{
+    display:none
+}
+.ai-modal{
+    background:white;
+    width:min(880px,96vw);
+    max-height:92vh;
+    overflow:auto;
+    border-radius:9px;
+    box-shadow:0 15px 60px #0004;
+    padding:22px
+}
+.ai-modalhead{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px
+}
+.ai-modalhead h3{
+    margin:0
+}
+.ai-fields{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px
+}
+.ai-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:12px;
+    font-weight:600;
+    color:#536173
+}
+.ai-field.wide{
+    grid-column:1/-1
+}
+.ai-field input:not([type=checkbox]),.ai-field select,.ai-field textarea{
+    width:100%;
+    font:inherit;
+    font-weight:400;
+    color:#202c3b;
+    border:1px solid #d5dce6;
+    border-radius:5px;
+    padding:9px;
+    background:white
+}
+.ai-field textarea{
+    resize:vertical
+}
+.ai-field input[type=checkbox]{
+    align-self:start;
+    width:18px;
+    height:18px
+}
+.ai-modalfoot{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:20px
+}
+.ai-error{
+    color:#b22;
+    font-size:12px;
+    margin-top:10px
+}
+@media(max-width:720px){
+    .ai-fields{
+        grid-template-columns:1fr
+    }
+    .ai-toolbar input{
+        min-width:0;
+        width:100%
+    }
+}

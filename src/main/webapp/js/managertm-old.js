@@ -19,16 +19,14 @@
     sidebar.classList.toggle('collapsed');
     collapse.setAttribute('aria-expanded', String(!sidebar.classList.contains('collapsed')));
   });
-  const chatButton = document.getElementById('chatButton');
-  const chatPanel = document.getElementById('chatWindow');
-  const chatClose = document.getElementById('chatClose');
+  // WebChat.js es el único controlador del panel de chat.
+  // No modificar aquí el atributo hidden: WebChat usa la clase chat-hidden.
   function toggleChat(open) {
-    chatPanel.hidden = !open;
-    chatButton.setAttribute('aria-expanded', String(open));
-    if (open) document.dispatchEvent(new Event('managertm:chatopen'));
+    const chat = window.webChat;
+    if (!chat) return;
+    if (open) chat.open();
+    else chat.close();
   }
-  chatButton?.addEventListener('click', () => toggleChat(chatPanel.hidden));
-  chatClose?.addEventListener('click', () => toggleChat(false));
   showView('dashboard');
   window.ManagerTM = {showView, toggleChat};
 })();
