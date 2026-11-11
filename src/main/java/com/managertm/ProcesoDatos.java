@@ -24,7 +24,7 @@ public class ProcesoDatos extends HttpServlet {
         //HttpSession session = request.getSession(false);
         //String token = (session != null) ? (String) session.getAttribute("token") : null;
         String token = getToken.token(request);
-        if(token != null){
+        
         //if (token != null){
             BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream(), "UTF-8"));
             StringBuilder jsonBody = new StringBuilder();
@@ -32,33 +32,49 @@ public class ProcesoDatos extends HttpServlet {
             while((line = reader.readLine()) != null){
                 jsonBody.append(line);
             }
-            System.out.println("JSON Recibido: " + jsonBody);
-            String jsonResponse = enviarSolicitud(jsonBody.toString(),token);
+            JSONObject json = new JSONObject(jsonBody.toString());
+            String action = "";
+            if(json.has("Accion"))action = json.getString("Accion");
             
-            response.setContentType("application/json;charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(jsonResponse);
-            
-        }else{
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"error\":\"TokenVencido\"}");
+        if ("CambiarPasswordInicial".equals(action)) {
+            Enviar(response, jsonBody.toString(), "");
             return;
         }
+
+        // Las demás operaciones requieren token.
+        if (token == null || token.trim().isEmpty()) {
+            Salir(response);
+            return;
+        }
+            
+        Enviar(response,jsonBody.toString(),token);
     }
+    
 
     @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    private String enviarSolicitud(String solicitud,String token) throws IOException{
-        //URL url = new URL("http://localhost:47994/api/ApiTM/");
+    private void Enviar(HttpServletResponse response,String jsonBody,String token) throws IOException{
+        ApiResponse api = enviarSolicitud(jsonBody,token);
+            
+            response.setStatus(api.status);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write(api.body);
+    }
+    private void Salir(HttpServletResponse response) throws IOException{
+         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\":\"TokenVencido\"}");
+            return;
+    }
+    private ApiResponse enviarSolicitud(String solicitud,String token) throws IOException{
         URL url = new URL(urlstatic.url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type","application/json");
-        conn.setRequestProperty("Authorization", "Bearer "+ token);
+        if(!token.equals("")) conn.setRequestProperty("Authorization", "Bearer "+ token);
         
         String jsonInputString = new JSONObject(solicitud).toString();
         
@@ -76,6 +92,7 @@ public class ProcesoDatos extends HttpServlet {
                 response.append(responseLine.trim());
             }            
         }
-        return response.toString();
+        return new ApiResponse(status, response.toString());
     }
 }
+

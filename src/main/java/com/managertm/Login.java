@@ -63,7 +63,8 @@ public class Login extends HttpServlet {
         boolean success  = false;
         
         if (!responseObj.optString("requireMfa").isEmpty() ||
-            !responseObj.optString("mToken").isEmpty()) {
+            !responseObj.optString("mToken").isEmpty() ||
+            !responseObj.optString("ChangePassword").isEmpty()) {
             success = true;
         }
 
@@ -77,6 +78,11 @@ public class Login extends HttpServlet {
             return;
         }
         boolean req = responseObj.optBoolean("requireMfa",false);
+        boolean change = responseObj.optBoolean("ChangePassword",false);
+        if(change){
+            response.getWriter().write(new JSONObject().put("success", true).put("ChangePassword", true).toString());
+            return;
+        } 
         if(req){
             response.getWriter().write(new JSONObject().put("success", true).put("requireMfa", true).toString());
             return;

@@ -111,253 +111,391 @@
                 </div>
             </div>        
         </div>
+        <div id="modalCambioPassword" class="tm-password-overlay"
+             role="dialog" aria-modal="true"
+             aria-labelledby="tituloCambioPassword" hidden>
+
+            <div class="tm-password-modal">
+
+                <div class="tm-password-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+
+                <h2 id="tituloCambioPassword">
+                    Actualizá tu contraseña
+                </h2>
+
+                <p class="tm-password-description">
+                    Por seguridad, necesitás establecer una contraseña
+                    definitiva antes de acceder al sistema.
+                </p>
+
+                <form id="formCambioPassword">
+
+                    <label for="passwordNueva">
+                        Nueva contraseña
+                    </label>
+
+                    <input type="password"
+                           id="passwordNueva"
+                           autocomplete="new-password"
+                           minlength="12"
+                           maxlength="128"
+                           required>
+
+                    <label for="passwordConfirmar">
+                        Confirmar contraseña
+                    </label>
+
+                    <input type="password"
+                           id="passwordConfirmar"
+                           autocomplete="new-password"
+                           minlength="12"
+                           maxlength="128"
+                           required>
+
+                    <div id="errorCambioPassword"
+                         class="tm-password-error"
+                         role="alert"></div>
+
+                    <button type="submit"
+                            id="btnGuardarPassword"
+                            class="tm-password-submit">
+                        Guardar contraseña
+                    </button>
+
+                </form>
+
+            </div>
+        </div>                
         <script src="js/jquery.js"></script>
         <script>
-        const ctx = '${pageContext.request.contextPath}';
+            const ctx = '${pageContext.request.contextPath}';
 
-        const loginForm = document.querySelector(".login-card form");
-        const usernameInput = document.getElementById("username");
-        const passwordInput = document.getElementById("password");
-        const submitBtn = document.getElementById("submitBtn");
+            const loginForm = document.querySelector(".login-card form");
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("password");
+            const submitBtn = document.getElementById("submitBtn");
 
-        const mfaOverlay = document.getElementById("mfa-overlay");
-        const mfaCodeInput = document.getElementById("mfa-code");
-        const btnConfirmMfa = document.getElementById("btnConfirmMfa");
-        const btnCloseMfa = document.getElementById("btnCloseMfa");
+            const mfaOverlay = document.getElementById("mfa-overlay");
+            const mfaCodeInput = document.getElementById("mfa-code");
+            const btnConfirmMfa = document.getElementById("btnConfirmMfa");
+            const btnCloseMfa = document.getElementById("btnCloseMfa");
+            let passwordTemporalPendiente = null;
+            let usuarioPendiente = null;
 
-        let usuarioPendienteMfa = null;
-        let procesando = false;
-
-        function mostrarError(mensaje) {
-            let errorDiv = document.getElementById("loginErrorJs");
-
-            if (!errorDiv) {
-                errorDiv = document.createElement("div");
-                errorDiv.id = "loginErrorJs";
-                errorDiv.className = "login-error";
-                errorDiv.setAttribute("role", "alert");
-
-                loginForm.before(errorDiv);
+            let usuarioPendienteMfa = null;
+            let procesando = false;
+            function abrirModalCambioPassword() {
+                document.getElementById("modalCambioPassword").hidden = false;
+                document.getElementById("passwordNueva").focus();
             }
 
-            errorDiv.textContent = mensaje;
-            errorDiv.style.display = "block";
-        }
+            function cerrarModalCambioPassword() {
+                document.getElementById("modalCambioPassword").hidden = true;
 
-        function limpiarError() {
-            const errorDiv = document.getElementById("loginErrorJs");
+                passwordTemporalPendiente = null;
+                usuarioPendiente = null;
 
-            if (errorDiv) {
-                errorDiv.style.display = "none";
-                errorDiv.textContent = "";
+                document.getElementById("formCambioPassword").reset();
             }
-        }
 
-        function mostrarErrorMfa(mensaje) {
-            document.getElementById("mfa-error").textContent = mensaje;
-        }
+            $("#formCambioPassword").on("submit", async function (e) {
+                e.preventDefault();
 
-        function abrirModalMFA() {
-            mfaCodeInput.value = "";
-            mostrarErrorMfa("");
+                const nueva = $("#passwordNueva").val();
+                const confirmar = $("#passwordConfirmar").val();
+                const $error = $("#errorCambioPassword");
+                const $boton = $("#btnGuardarPassword");
 
-            mfaOverlay.style.display = "flex";
-            mfaOverlay.setAttribute("aria-hidden", "false");
+                $error.text("");
 
-            mfaCodeInput.focus();
-        }
+                if (nueva.length < 12 || nueva.length > 128) {
+                    $error.text("La contraseña debe tener entre 12 y 128 caracteres.");
+                    return;
+                }
 
-        function cerrarModalMFA() {
-            mfaOverlay.style.display = "none";
-            mfaOverlay.setAttribute("aria-hidden", "true");
+                if (nueva !== confirmar) {
+                    $error.text("Las contraseñas no coinciden.");
+                    return;
+                }
 
-            mfaCodeInput.value = "";
-            mostrarErrorMfa("");
-        }
+                if (nueva === passwordTemporalPendiente) {
+                    $error.text("La nueva contraseña debe ser diferente a la temporal.");
+                    return;
+                }
 
-        function setProcesando(valor, esMfa = false) {
-            procesando = valor;
+                $boton.prop("disabled", true);
 
-            submitBtn.disabled = valor;
-            btnConfirmMfa.disabled = valor;
-            btnCloseMfa.disabled = valor;
+                try {
+                    const response = await $.ajax({
+                        url: "ProcesoDatos",
+                        method: "POST",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            Accion: "CambiarPasswordInicial",
+                            Parametro1: usuarioPendiente,
+                            Parametro3: passwordTemporalPendiente,
+                            Parametro2: nueva
+                        })
+                    });
 
-            submitBtn.textContent =
-                    valor && !esMfa
-                    ? "Autenticando..."
-                    : "Ingresar al panel →";
+                    if (response.usuario !== usuarioPendiente) {
+                        $error.text(
+                                response.message || "No se pudo actualizar la contraseña."
+                                );
+                        return;
+                    }
 
-            btnConfirmMfa.textContent =
-                    valor && esMfa
-                    ? "Validando..."
-                    : "Validar código";
-        }
+                    cerrarModalCambioPassword();
 
-        async function solicitarLogin(usuario, password, tipo) {
-            const params = new URLSearchParams();
+                    alert("Contraseña actualizada. Iniciá sesión nuevamente.");
 
-            params.append("userN", usuario);
-            params.append("passW", password);
-            params.append("type", tipo);
-
-            const response = await fetch(ctx + "/Login", {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: params.toString()
+                } catch (error) {
+                    $error.text("No se pudo completar la solicitud.");
+                } finally {
+                    $boton.prop("disabled", false);
+                }
             });
+            function mostrarError(mensaje) {
+                let errorDiv = document.getElementById("loginErrorJs");
 
-            const data = await response.json();
+                if (!errorDiv) {
+                    errorDiv = document.createElement("div");
+                    errorDiv.id = "loginErrorJs";
+                    errorDiv.className = "login-error";
+                    errorDiv.setAttribute("role", "alert");
 
-            if (!response.ok) {
-                throw new Error(
-                        data.message || "Error HTTP " + response.status
-                        );
-            }
-
-            return data;
-        }
-
-        function loginExitoso() {
-            usernameInput.value = "";
-            passwordInput.value = "";
-            mfaCodeInput.value = "";
-
-            window.location.replace(ctx + "/verificarToken");
-        }
-
-        async function iniciarSesion(event) {
-            event.preventDefault();
-
-            if (procesando)
-                return;
-
-            limpiarError();
-
-            const usuario = usernameInput.value.trim();
-            const password = passwordInput.value;
-
-            if (!usuario || !password) {
-                mostrarError("Ingresá tu usuario y contraseña.");
-                return;
-            }
-
-            setProcesando(true);
-
-            try {
-                const data = await solicitarLogin(
-                        usuario,
-                        password,
-                        "login"
-                        );
-
-                if (data.success === true && !data.requireMfa) {
-                    loginExitoso();
-                    return;
+                    loginForm.before(errorDiv);
                 }
 
-                if (data.requireMfa === true) {
-                    usuarioPendienteMfa = usuario;
-                    passwordInput.value = "";
-                    abrirModalMFA();
-                    return;
-                }
-
-                mostrarError(
-                        data.message || "Usuario o contraseña incorrectos."
-                        );
-
-            } catch (error) {
-                console.error("Error de autenticación:", error);
-                mostrarError(
-                        "No se pudo iniciar sesión. " + error.message
-                        );
-            } finally {
-                setProcesando(false);
+                errorDiv.textContent = mensaje;
+                errorDiv.style.display = "block";
             }
-        }
 
-        async function confirmarMFA(event) {
-            event.preventDefault();
+            function limpiarError() {
+                const errorDiv = document.getElementById("loginErrorJs");
 
-            if (procesando)
-                return;
+                if (errorDiv) {
+                    errorDiv.style.display = "none";
+                    errorDiv.textContent = "";
+                }
+            }
 
-            const codigo = mfaCodeInput.value.trim();
+            function mostrarErrorMfa(mensaje) {
+                document.getElementById("mfa-error").textContent = mensaje;
+            }
 
-            if (!/^\d{6}$/.test(codigo)) {
-                mostrarErrorMfa("Ingresá un código de 6 dígitos.");
+            function abrirModalMFA() {
+                mfaCodeInput.value = "";
+                mostrarErrorMfa("");
+
+                mfaOverlay.style.display = "flex";
+                mfaOverlay.setAttribute("aria-hidden", "false");
+
                 mfaCodeInput.focus();
-                return;
             }
 
-            if (!usuarioPendienteMfa) {
-                mostrarErrorMfa(
-                        "La sesión de autenticación no es válida. Volvé a ingresar."
-                        );
-                return;
-            }
-
-            mostrarErrorMfa("");
-            setProcesando(true, true);
-
-            try {
-                const data = await solicitarLogin(
-                        usuarioPendienteMfa,
-                        codigo,
-                        "code"
-                        );
-
-                if (data.success === true && !data.requireMfa) {
-                    loginExitoso();
-                    return;
-                }
-
-                mostrarErrorMfa(
-                        data.message || "El código ingresado no es válido."
-                        );
+            function cerrarModalMFA() {
+                mfaOverlay.style.display = "none";
+                mfaOverlay.setAttribute("aria-hidden", "true");
 
                 mfaCodeInput.value = "";
-                mfaCodeInput.focus();
-
-            } catch (error) {
-                console.error("Error MFA:", error);
-                mostrarErrorMfa(
-                        "No se pudo validar el código. Intentá nuevamente."
-                        );
-            } finally {
-                setProcesando(false, true);
+                mostrarErrorMfa("");
             }
-        }
 
-        loginForm.addEventListener("submit", iniciarSesion);
+            function setProcesando(valor, esMfa = false) {
+                procesando = valor;
 
-        submitBtn.addEventListener("click", iniciarSesion);
+                submitBtn.disabled = valor;
+                btnConfirmMfa.disabled = valor;
+                btnCloseMfa.disabled = valor;
 
-        btnConfirmMfa.addEventListener("click", confirmarMFA);
+                submitBtn.textContent =
+                        valor && !esMfa
+                        ? "Autenticando..."
+                        : "Ingresar al panel →";
 
-        btnCloseMfa.addEventListener("click", () => {
-            if (procesando)
-                return;
-
-            cerrarModalMFA();
-            usuarioPendienteMfa = null;
-        });
-
-        mfaCodeInput.addEventListener("keydown", event => {
-            if (event.key === "Enter") {
-                confirmarMFA(event);
+                btnConfirmMfa.textContent =
+                        valor && esMfa
+                        ? "Validando..."
+                        : "Validar código";
             }
-        });
 
-        mfaCodeInput.addEventListener("input", () => {
-            mfaCodeInput.value =
-                    mfaCodeInput.value.replace(/\D/g, "").slice(0, 6);
+            async function solicitarLogin(usuario, password, tipo) {
+                const params = new URLSearchParams();
 
-            mostrarErrorMfa("");
-        });
+                params.append("userN", usuario);
+                params.append("passW", password);
+                params.append("type", tipo);
+
+                const response = await fetch(ctx + "/Login", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params.toString()
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                            data.message || "Error HTTP " + response.status
+                            );
+                }
+
+                return data;
+            }
+
+            function loginExitoso() {
+                usernameInput.value = "";
+                passwordInput.value = "";
+                mfaCodeInput.value = "";
+
+                window.location.replace(ctx + "/verificarToken");
+            }
+
+            async function iniciarSesion(event) {
+                event.preventDefault();
+
+                if (procesando)
+                    return;
+
+                limpiarError();
+
+                const usuario = usernameInput.value.trim();
+                const password = passwordInput.value;
+
+                if (!usuario || !password) {
+                    mostrarError("Ingresá tu usuario y contraseña.");
+                    return;
+                }
+
+                setProcesando(true);
+
+                try {
+                    const data = await solicitarLogin(
+                            usuario,
+                            password,
+                            "login"
+                            );
+
+                    if (data.ChangePassword === true) {
+                        usuarioPendiente = usuario;
+                        passwordTemporalPendiente = password;
+
+                        abrirModalCambioPassword();
+                        return;
+                    }
+
+                    if (data.success === true && !data.requireMfa) {
+                        loginExitoso();
+                        return;
+                    }
+
+                    if (data.requireMfa === true) {
+                        usuarioPendienteMfa = usuario;
+                        passwordInput.value = "";
+                        abrirModalMFA();
+                        return;
+                    }
+
+                    mostrarError(
+                            data.message || "Usuario o contraseña incorrectos."
+                            );
+
+                } catch (error) {
+                    console.error("Error de autenticación:", error);
+                    mostrarError(
+                            "No se pudo iniciar sesión. " + error.message
+                            );
+                } finally {
+                    setProcesando(false);
+                }
+            }
+
+            async function confirmarMFA(event) {
+                event.preventDefault();
+
+                if (procesando)
+                    return;
+
+                const codigo = mfaCodeInput.value.trim();
+
+                if (!/^\d{6}$/.test(codigo)) {
+                    mostrarErrorMfa("Ingresá un código de 6 dígitos.");
+                    mfaCodeInput.focus();
+                    return;
+                }
+
+                if (!usuarioPendienteMfa) {
+                    mostrarErrorMfa(
+                            "La sesión de autenticación no es válida. Volvé a ingresar."
+                            );
+                    return;
+                }
+
+                mostrarErrorMfa("");
+                setProcesando(true, true);
+
+                try {
+                    const data = await solicitarLogin(
+                            usuarioPendienteMfa,
+                            codigo,
+                            "code"
+                            );
+
+                    if (data.success === true && !data.requireMfa) {
+                        loginExitoso();
+                        return;
+                    }
+
+                    mostrarErrorMfa(
+                            data.message || "El código ingresado no es válido."
+                            );
+
+                    mfaCodeInput.value = "";
+                    mfaCodeInput.focus();
+
+                } catch (error) {
+                    console.error("Error MFA:", error);
+                    mostrarErrorMfa(
+                            "No se pudo validar el código. Intentá nuevamente."
+                            );
+                } finally {
+                    setProcesando(false, true);
+                }
+            }
+
+            loginForm.addEventListener("submit", iniciarSesion);
+
+            submitBtn.addEventListener("click", iniciarSesion);
+
+            btnConfirmMfa.addEventListener("click", confirmarMFA);
+
+            btnCloseMfa.addEventListener("click", () => {
+                if (procesando)
+                    return;
+
+                cerrarModalMFA();
+                usuarioPendienteMfa = null;
+            });
+
+            mfaCodeInput.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    confirmarMFA(event);
+                }
+            });
+
+            mfaCodeInput.addEventListener("input", () => {
+                mfaCodeInput.value =
+                        mfaCodeInput.value.replace(/\D/g, "").slice(0, 6);
+
+                mostrarErrorMfa("");
+            });
 
         </script>
     </body>

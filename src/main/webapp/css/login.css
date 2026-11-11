@@ -404,3 +404,111 @@ body{
         letter-spacing: 7px;
     }
 }
+
+/*changePassword*/
+.tm-password-overlay[hidden] {
+    display: none !important;
+}
+
+.tm-password-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(8, 15, 26, .82);
+    backdrop-filter: blur(8px);
+}
+
+.tm-password-modal {
+    width: 100%;
+    max-width: 430px;
+    padding: 36px;
+    border-radius: 20px;
+    color: #edf4fa;
+    background: linear-gradient(
+        145deg, #192839, #101c2a
+    );
+    border: 1px solid rgba(94, 174, 198, .25);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .4);
+}
+
+.tm-password-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 22px;
+    border-radius: 16px;
+    color: #75d1db;
+    background: rgba(65, 173, 192, .13);
+    font-size: 24px;
+}
+
+.tm-password-modal h2 {
+    margin: 0 0 12px;
+    font-size: 24px;
+    font-weight: 650;
+}
+
+.tm-password-description {
+    margin-bottom: 26px;
+    color: #a7b9c9;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.tm-password-modal label {
+    display: block;
+    margin: 16px 0 8px;
+    font-size: 13px;
+    color: #d6e4ef;
+}
+
+.tm-password-modal input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #34495d;
+    border-radius: 10px;
+    background: #0d1926;
+    color: white;
+    outline: none;
+}
+
+.tm-password-modal input:focus {
+    border-color: #58b9ca;
+    box-shadow: 0 0 0 3px rgba(88, 185, 202, .12);
+}
+
+.tm-password-submit {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    color: #081923;
+    background: linear-gradient(135deg, #69c7d4, #48a9ba);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tm-password-submit:disabled {
+    opacity: .6;
+    cursor: wait;
+}
+
+.tm-password-error {
+    margin-top: 12px;
+    color: #ff9a9a;
+    font-size: 13px;
+}
+
+@media (max-width: 480px) {
+    .tm-password-modal {
+        padding: 25px;
+    }
+}
+
