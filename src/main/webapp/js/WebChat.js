@@ -1,4 +1,3 @@
-
 class WebChat {
 
     constructor() {
@@ -1214,13 +1213,8 @@ class WebChat {
                 location.protocol === 'https:'
                 ? 'wss:'
                 : 'ws:';
-
-        const url =
-                protocol +
-                '//' +
-                location.host +
-                '/ws/chat?token=' +
-                encodeURIComponent(this.token);
+        //const url = "ws://localhost:47994/ws/chat?token=" + encodeURIComponent(this.token);
+        const url = protocol +'//' + location.host + '/ws/chat?token=' + encodeURIComponent(this.token);
 
         const ws = new WebSocket(url);
 

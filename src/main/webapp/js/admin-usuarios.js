@@ -53,9 +53,11 @@
                 idUsuario: get(p, 'idUsuario', 'IdUsuario'),
                 username: get(p, 'username', 'Username', ''),
                 usuarioActivo: get(p, 'usuarioActivo', 'UsuarioActivo', false),
+                permisos: (get(p, 'permisos', 'Permisos', [])).map(x => ({permisoId: Number(get(x, 'permisoId', 'PermisoId')), permitido: !!get(x, 'permitido', 'Permitido', false)})),
                 roles: (get(p, 'roles', 'Roles', [])).map(x =>
                     Number(typeof x === 'object' ? get(x, 'idRol', 'IdRol') : x))
             })),
+            permisos: (get(r, 'permisos', 'Permisos', [])).map(x => ({id: Number(get(x, 'id', 'Id')), codigo: get(x, 'codigo', 'Codigo', ''), nombre: get(x, 'nombre', 'Nombre', ''), modulo: get(x, 'modulo', 'Modulo', 'GENERAL')})),
             roles: (get(r, 'roles', 'Roles', [])).map(x => ({
                 idRol: Number(get(x, 'idRol', 'IdRol')),
                 nombre: get(x, 'nombre', 'Nombre', '')
@@ -115,6 +117,16 @@
     function rolesMarkup(selectedRoles = []) {
         return (data.roles || []).map(r => `<label class="ua-role"><input type="checkbox" name="uaRole" value="${r.idRol}" ${selectedRoles.includes(r.idRol) ? 'checked' : ''}>${esc(r.nombre)}</label>`).join('');
     }
+    function permisosMarkup(selected = []) {
+        const byModule = {};
+        for (const p of data.permisos || []) (byModule[p.modulo] ||= []).push(p);
+        return Object.entries(byModule).map(([module, list]) => `<fieldset class="ua-permission-group"><legend>${esc(module)}</legend>` +
+            list.map(p => {
+                const found = selected.find(x => x.permisoId === p.id);
+                const value = found ? (found.permitido ? 'allow' : 'deny') : 'unset';
+                return `<label class="ua-permission-row"><span>${esc(p.nombre)} <small>${esc(p.codigo)}</small></span><select data-permission-id="${p.id}"><option value="unset" ${value === 'unset' ? 'selected' : ''}>Sin asignar</option><option value="allow" ${value === 'allow' ? 'selected' : ''}>Permitir</option><option value="deny" ${value === 'deny' ? 'selected' : ''}>Denegar</option></select></label>`;
+            }).join('') + '</fieldset>').join('');
+    }
     function openModal(action, person) {
         mode = action;
         selected = person;
@@ -127,6 +139,8 @@
         $('#uaPasswordBox').hidden = action === 'edit';
         $('#uaUsernameBox').hidden = action === 'reset';
         $('#uaRolesBox').hidden = action === 'reset';
+        $('#uaPermisosBox').hidden = action === 'reset';
+        $('#uaPermisos').innerHTML = permisosMarkup(person.permisos || []);
         $('#uaActiveBox').hidden = action !== 'edit';
         $('#uaEnabled').checked = !!person.usuarioActivo;
         $('#uaRoles').innerHTML = rolesMarkup(person.roles || []);
@@ -142,15 +156,16 @@
         if (!selected)
             return;
         const roles = [...root.querySelectorAll('input[name="uaRole"]:checked')].map(x => Number(x.value));
+        const permisos = [...root.querySelectorAll('select[data-permission-id]')].filter(x => x.value !== 'unset').map(x => ({permisoId: Number(x.dataset.permissionId), permitido: x.value === 'allow'}));
         const password = $('#uaPassword').value;
         const btn = $('#uaSubmit');
         btn.disabled = true;
         $('#uaModalError').hidden = true;
         try {
             if (mode === 'create')
-                await api('create', 'POST', {idPersonal: selected.idPersonal, username: $('#uaUsername').value.trim(), passwordTemporal: password, roles});
+                await api('create', 'POST', {idPersonal: selected.idPersonal, username: $('#uaUsername').value.trim(), passwordTemporal: password, roles, permisos});
             else if (mode === 'edit')
-                await api('update', 'PUT', {activo: $('#uaEnabled').checked, roles}, selected.idUsuario);
+                await api('update', 'PUT', {activo: $('#uaEnabled').checked, roles, permisos}, selected.idUsuario);
             else
                 await api('reset', 'POST', {passwordTemporal: password}, selected.idUsuario);
             closeModal();

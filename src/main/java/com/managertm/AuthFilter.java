@@ -20,47 +20,37 @@ public class AuthFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
+    public void doFilter(
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain)
+            throws IOException, ServletException {
 
-        String uri = req.getRequestURI();
+        HttpServletRequest req =
+                (HttpServletRequest) request;
 
-        if (
-                uri.endsWith("index.jsp")
-                || uri.contains("/Login")
-                || uri.contains("/css/")
-                || uri.contains("/js/")
-                || uri.contains("/images/")
-           ) {
+        HttpServletResponse resp =
+                (HttpServletResponse) response;
 
-            chain.doFilter(request,response);
-            return;
-        }
+        try {
+            AuthSessionManager.getValidAccessToken(req);
 
-        boolean autenticado = false;
+            chain.doFilter(request, response);
 
-        Cookie[] cookies = req.getCookies();
+        } catch (AuthSessionManager.SessionExpiredException ex) {
 
-        if(cookies != null){
-            for(Cookie c : cookies){
-                if("ssid".equals(c.getName())
-                        && c.getValue() != null
-                        && !c.getValue().isEmpty()){
-
-                    autenticado = true;
-                    break;
-                }
-            }
-        }
-
-        if(!autenticado){
             resp.sendRedirect(
-                req.getContextPath() + "/index.jsp");
-            return;
-        }
+                    req.getContextPath() + "/index.jsp");
 
-        chain.doFilter(request,response);
+        } catch (IOException ex) {
+
+            req.getServletContext().log(
+                    "Error verificando autenticación", ex);
+
+            resp.sendError(
+                    HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                    "No se pudo verificar la sesión");
+        }
     }
 
     @Override

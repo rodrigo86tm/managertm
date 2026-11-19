@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
@@ -50,131 +51,58 @@ public class WebChatToken extends HttpServlet {
     protected void doPost( HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("application/json;charset=UTF-8");
-
-        response.setCharacterEncoding("UTF-8");
-
-        // 1. Obtener ssid
-        String ssid = getToken.token(request);
-
-        if (ssid == null || ssid.isEmpty()) {
-
+        response.setHeader("Cache-Control", "no-store");
+        // 1. Validar sesión y renovar token si hace falta.
+        try {
+            getToken.token(request);
+        } catch (AuthSessionManager.SessionExpiredException ex) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
             response.getWriter().write(
                     new JSONObject()
                             .put("success", false)
-                            .put("message", "No autenticado")
+                            .put("message", "Sesión vencida")
+                            .toString());
+            return;
+        } catch (IOException ex) {
+            getServletContext().log("Error validando sesión WebSocket", ex);
+
+            response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            response.getWriter().write(
+                    new JSONObject()
+                            .put("success", false)
+                            .put("message", "No se pudo validar la sesión")
                             .toString());
 
             return;
         }
-
-        // 2. Validar ssid contra API
-        String userId = validarToken(ssid);
-
-        if (userId == null || userId.isEmpty()) {
-
-            response.setStatus(
+        // 2. Obtener el perfil guardado durante el login.
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        JSONObject profile =(JSONObject) session.getAttribute("profile");
 
-            response.getWriter().write(
-                    new JSONObject()
-                            .put("success", false)
-                            .put("message", "Sesion invalida o vencida")
-                            .toString());
-
+        if (profile == null) {
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // 3. Generar JWT WebChat
-        String jwt =
-                tokenService.generateToken(userId);
-
-        // 4. Devolver JWT al navegador
-        JSONObject result =
-                new JSONObject()
-                        .put("success", true)
-                        .put("token", jwt);
-
-        response.getWriter().write(
-                result.toString());
-    }
-
-    private String validarToken(String ssid)
-            throws IOException {
-        URL url = new URL(urlstatic.url);
-
-        HttpURLConnection conn =
-                (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod("POST");
-
-        conn.setRequestProperty(
-                "Content-Type",
-                "application/json");
-
-        conn.setRequestProperty(
-                "Authorization",
-                "Bearer " + ssid);
-
-        conn.setDoOutput(true);
-
-        JSONObject body =
-                new JSONObject()
-                        .put("Accion", "WebChatValidate");
-
-        byte[] input =
-                body.toString().getBytes("UTF-8");
-
-        try (OutputStream os =
-                     conn.getOutputStream()) {
-
-            os.write(input, 0, input.length);
+        String userId = profile.optString("Usuario", "");
+        if (userId.isEmpty()) {
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
+        // 3. Generar el JWT RSA de WebChat.
+        String jwt = tokenService.generateToken(userId);
+        // 4. Devolver el JWT al navegador.
+        JSONObject result = new JSONObject()
+                .put("success", true)
+                .put("token", jwt);
 
-        int status =
-                conn.getResponseCode();
-
-        InputStream stream;
-
-        if (status >= 200 && status < 300) {
-
-            stream = conn.getInputStream();
-
-        } else {
-
-            stream = conn.getErrorStream();
-        }
-
-        if (stream == null)
-            return null;
-
-        StringBuilder result =
-                new StringBuilder();
-
-        try (BufferedReader br =
-                     new BufferedReader(
-                             new InputStreamReader(
-                                     stream,
-                                     "UTF-8"))) {
-
-            String line;
-
-            while ((line = br.readLine()) != null) {
-
-                result.append(line);
-            }
-        }
-
-        if (status < 200 || status >= 300)
-            return null;
-
-        JSONObject json =
-                new JSONObject(result.toString());
-
-        if (!json.optBoolean("success", false))
-            return null;
-
-        return json.optString("user", null);
+        response.getWriter().write(result.toString());
     }
 }

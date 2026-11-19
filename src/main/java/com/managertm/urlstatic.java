@@ -17,5 +17,9 @@ public class urlstatic {
     public static final String url_Admin = "http://localhost:8344/api/admin/usuarios";
     //public static final String urlAI = "http://localhost:47994/api/admin/ai";
     public static final String urlAI = "http://localhost:8344/api/admin/ai";
+    //public static final String AUTH_URL = "http://localhost:47994/api/auth";
+    public static final String AUTH_URL = "http://localhost:8344/api/auth";
+    //public static final String url_Precios = "http://localhost:47994/api/admin/precios";
+    public static final String url_Precios = "http://localhost:8344/api/admin/precios";
     
 }

@@ -1,0 +1,108 @@
+.sp-wrap{
+    padding:24px;
+    max-width:1200px
+}
+.sp-wrap input{
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px
+}
+.sp-wrap button{
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer
+}
+.sp-wrap table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:16px
+}
+.sp-wrap th,.sp-wrap td{
+    text-align:left;
+    padding:12px;
+    border-bottom:1px solid #e2e8f0
+}
+.sp-wrap #spStatus{
+    padding:12px 0;
+    color:#475569
+}
+.sp-wrap #spVariants{
+    overflow:auto
+}
+/* Barra horizontal de acciones */
+.sp-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+/* Formularios dentro de la barra */
+.sp-toolbar form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+/* Evitar que los botones dividan el texto */
+.sp-toolbar button {
+    white-space: nowrap;
+}
+
+/* Adaptación a pantallas pequeñas */
+@media (max-width: 768px) {
+    .sp-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sp-toolbar form {
+        width: 100%;
+    }
+
+    .sp-toolbar button {
+        width: 100%;
+    }
+
+    .sp-toolbar input {
+        flex: 1;
+        min-width: 0;
+    }
+}
+/* Formularios en una sola fila */
+.sp-wrap {
+    display: grid;
+    grid-template-columns: max-content max-content max-content max-content;
+    column-gap: 10px;
+    align-items: center;
+}
+
+/* Título, descripción y resultados ocupan todo el ancho */
+.sp-wrap > h2,
+.sp-wrap > p,
+.sp-wrap > #spStatus,
+.sp-wrap > #spProduct,
+.sp-wrap > #spVariants,
+.sp-wrap > #spSyncSku {
+    grid-column: 1 / -1;
+}
+
+/* Formularios sin márgenes */
+.sp-wrap > form {
+    margin: 0;
+    width: max-content;
+}
+
+/* Buscador horizontal */
+#spSearchForm {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Evitar saltos de línea dentro de botones */
+.sp-wrap button {
+    white-space: nowrap;
+}

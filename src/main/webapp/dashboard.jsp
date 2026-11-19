@@ -21,11 +21,27 @@
                     <button class="nav-item" data-view="agentes" data-title="Agentes IA" title="Agentes IA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4M9 13h.01M15 13h.01M9 17h6"/></svg><span>Agentes IA</span></button>
                     <button class="nav-item" data-view="ai-control" data-title="Centro de Control IA" title="Centro de Control IA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M5 8l-3 3 3 3M19 8l3 3-3 3M5 21h14M7 17h10M8 6h8v11H8z"/></svg><span>Control IA</span></button>
                     <button class="nav-item" data-view="supervision" data-title="Supervisión" title="Supervisión"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M9 13l2 2 4-4"/></svg><span>Supervisión</span></button>
-                    <button class="nav-item" data-view="informes" data-title="Informes" title="Informes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V11h4v10M10 21V3h4v18M16 21v-7h4v7M2 21h20"/></svg><span>Informes</span></button>
+                    <button class="nav-item" data-view="informes" data-title="Informes" title="Informes">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 21V11h4v10M10 21V3h4v18M16 21v-7h4v7M2 21h20"/></svg>
+                        <span>Informes</span>
+                    </button>
                     <button class="nav-item" data-view="usuarios" data-title="Administración de usuarios" title="Usuarios">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 8h5M19.5 5.5v5"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 8h5M19.5 5.5v5"/></svg>
                         <span>Usuarios</span>
                     </button>
+                    <button class="nav-item" data-view="precios" data-title="Precios Shopify" title="Precios"><span>💲</span><span>Precios</span></button>
+                    <form action="<%= request.getContextPath()%>/Logout" method="POST">
+                        <button class="nav-item" data-view="Logout" data-title="Logout" title="Logout">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                            <span>Logout</span>
+                        </button>
+                    </form>
                 </nav>
                 <div class="sidebar-bottom"><button class="collapse-btn" id="collapseSidebar" aria-expanded="true" title="Contraer menú">☰ <span class="collapse-label">Contraer menú</span></button></div></aside>
             <main class="workspace"><header class="topbar"><span id="pageTitle">Panel de dirección</span><div class="topbar-actions"><button class="icon-button" aria-label="Notificaciones" title="Notificaciones (pendiente de integrar)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button></div></header>
@@ -35,13 +51,27 @@
                     <section class="view" id="view-supervision"><div class="section-card"><h2>Supervisión</h2><p>Tareas, confirmaciones, vencimientos y escalaciones de tus agentes.</p><div id="supervisionModule"></div></div></section>
                     <section class="view" id="view-informes"><div class="section-card"><h2>Informes</h2><p>Indicadores de operaciones y reportes de dirección.</p><div id="reportsModule"></div></div></section></div>
                 <section class="view" id="view-ai-control"><div class="ai-control">
-                    <div class="ai-header"><div><h2>Centro de Control IA</h2><p>Agentes, herramientas, tareas, programación y auditoría</p></div><div><button class="ai-btn" id="aiRefresh">↻ Actualizar</button> <button class="ai-btn primary" id="aiNew">+ Nuevo registro</button></div></div>
-                    <nav class="ai-tabs" aria-label="Módulos de tareas IA">
-                        <button data-ai-tab="agents">Agentes</button><button data-ai-tab="tools">Herramientas</button><button data-ai-tab="definitions">Definiciones</button><button data-ai-tab="schedules">Programación</button><button data-ai-tab="cases">Casos</button><button data-ai-tab="executions">Ejecuciones</button><button data-ai-tab="events">Eventos</button><button data-ai-tab="evidence">Evidencias</button><button data-ai-tab="assignments">Asignaciones</button>
-                    </nav><div class="ai-notice" id="aiNotice" hidden></div>
-                    <div class="ai-card"><div class="ai-toolbar"><h3 id="aiHeading">Agentes</h3><input id="aiSearch" type="search" placeholder="Buscar por nombre o código..."></div><div class="ai-tablewrap"><table class="ai-table"><thead id="aiTableHead"></thead><tbody id="aiTableBody"></tbody></table></div><div class="ai-footer"><button class="ai-btn" id="aiPrev">Anterior</button><span id="aiPage">Página 1</span><button class="ai-btn" id="aiNext">Siguiente</button></div></div>
-                    <div class="ai-modaloverlay" id="aiModal" hidden><div class="ai-modal" role="dialog" aria-modal="true" aria-labelledby="aiModalTitle"><div class="ai-modalhead"><h3 id="aiModalTitle">Registro</h3><button class="ai-btn" id="aiClose" type="button">✕</button></div><form id="aiForm"><div class="ai-fields" id="aiFields"></div><p id="aiFormError" class="ai-error"></p><div class="ai-modalfoot"><button type="button" class="ai-btn" id="aiCancel">Cancelar</button><button type="submit" class="ai-btn primary">Guardar</button></div></form></div></div>
-                </div></section>
+                        <div class="ai-header"><div><h2>Centro de Control IA</h2><p>Agentes, herramientas, tareas, programación y auditoría</p></div><div><button class="ai-btn" id="aiRefresh">↻ Actualizar</button> <button class="ai-btn primary" id="aiNew">+ Nuevo registro</button></div></div>
+                        <nav class="ai-tabs" aria-label="Módulos de tareas IA">
+                            <button data-ai-tab="agents">Agentes</button><button data-ai-tab="tools">Herramientas</button><button data-ai-tab="definitions">Definiciones</button><button data-ai-tab="schedules">Programación</button><button data-ai-tab="cases">Casos</button><button data-ai-tab="executions">Ejecuciones</button><button data-ai-tab="events">Eventos</button><button data-ai-tab="evidence">Evidencias</button><button data-ai-tab="assignments">Asignaciones</button>
+                        </nav><div class="ai-notice" id="aiNotice" hidden></div>
+                        <div class="ai-card"><div class="ai-toolbar"><h3 id="aiHeading">Agentes</h3><input id="aiSearch" type="search" placeholder="Buscar por nombre o código..."></div><div class="ai-tablewrap"><table class="ai-table"><thead id="aiTableHead"></thead><tbody id="aiTableBody"></tbody></table></div><div class="ai-footer"><button class="ai-btn" id="aiPrev">Anterior</button><span id="aiPage">Página 1</span><button class="ai-btn" id="aiNext">Siguiente</button></div></div>
+                        <div class="ai-modaloverlay" id="aiModal" hidden><div class="ai-modal" role="dialog" aria-modal="true" aria-labelledby="aiModalTitle"><div class="ai-modalhead"><h3 id="aiModalTitle">Registro</h3><button class="ai-btn" id="aiClose" type="button">✕</button></div><form id="aiForm"><div class="ai-fields" id="aiFields"></div><p id="aiFormError" class="ai-error"></p><div class="ai-modalfoot"><button type="button" class="ai-btn" id="aiCancel">Cancelar</button><button type="submit" class="ai-btn primary">Guardar</button></div></form></div></div>
+                    </div></section>
+                <section class="view" id="view-precios">
+                    <div class="sp-wrap">
+                        <h2>Precios Shopify</h2>
+                        <p>Consulta de productos, variantes y sincronización manual.</p>
+                        <div class="sp-toolbar">
+                            <form id="spSearchForm"><input id="spSku" placeholder="SKU exacto" required maxlength="100"><button>Buscar</button></form>
+                            <form id="spDatabaseForm"><button>Actualiza DB Productos</button></form>
+                            <form id="spVariantsDownloads"><button>Descarga Variants</button></form>
+                            <form id="spPrices"><button>Sync Prices</button></form>
+                        </div>
+                        <p id="spStatus" role="status"></p><div id="spProduct"></div><div id="spVariants"></div>
+                        <button id="spSyncSku" type="button" hidden>Forzar todas las variantes del SKU</button>
+                    </div>
+                </section>
                 <section class="view" id="view-usuarios">
                     <div class="ua">
                         <div class="ua-head"><div><h2>Personas y accesos</h2><div class="ua-sub">Personal · Usuarios de ManagerTM · Roles y seguridad</div></div>
@@ -62,6 +92,7 @@
                                     <div id="uaUsernameBox" class="ua-field"><label for="uaUsername">Nombre de usuario</label><input class="ua-input" id="uaUsername" autocomplete="off" maxlength="80" required></div>
                                     <div id="uaPasswordBox" class="ua-field"><label for="uaPassword">Contraseña temporal (mínimo 12 caracteres)</label><input class="ua-input" id="uaPassword" type="password" autocomplete="new-password" minlength="12"></div>
                                     <div id="uaRolesBox" class="ua-field"><label>Roles</label><div class="ua-roles" id="uaRoles"></div></div>
+                                    <div id="uaPermisosBox" class="ua-field"><label>Permisos individuales</label><div id="uaPermisos"></div></div>
                                     <div id="uaActiveBox" class="ua-field" hidden><label><input type="checkbox" id="uaEnabled"> Usuario habilitado</label></div>
                                     <div id="uaModalError" class="ua-alert error" hidden></div>
                                     <div class="ua-footer"><button type="button" id="uaCancel" class="ua-btn">Cancelar</button><button type="submit" id="uaSubmit" class="ua-btn primary">Guardar</button></div>
@@ -115,7 +146,9 @@
         <link rel="stylesheet" href="<%=ctx%>/css/ai-control.css?v=1">
         <script src="<%=ctx%>/js/WebChat.js"></script>
         <script src="<%=ctx%>/js/managertm.js"></script>
-        <script src="<%=ctx%>/js/admin-usuarios.js"></script>
+        <script src="<%=ctx%>/js/admin-usuarios.js?v=2"></script>
+        <link rel="stylesheet" href="<%=ctx%>/css/precios-shopify.css?v=1">
+        <script src="<%=ctx%>/js/precios-shopify.js?v=1"></script>
         <script src="<%=ctx%>/js/monitor-managertm.js"></script>
         <script src="<%=ctx%>/js/ai-control.js?v=1"></script>
 
